@@ -11,15 +11,15 @@ apt-get -qq install --no-install-recommends -y \
     lbzip2 \
     procps vainfo \
     unzip locales tzdata libxml2 xz-utils \
-    python3.9 \
+    python3.10 \
     python3-pip \
     curl \
     lsof \
     jq \
     nethogs
 
-# ensure python3 defaults to python3.9
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+# ensure python3 defaults to python3.10
+update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 
 mkdir -p -m 600 /root/.gnupg
 
@@ -65,9 +65,7 @@ fi
 
 # arch specific packages
 if [[ "${TARGETARCH}" == "amd64" ]]; then
-    # use debian bookworm for amd / intel-i965 driver packages
-    echo 'deb https://deb.debian.org/debian bookworm main contrib non-free' >/etc/apt/sources.list.d/debian-bookworm.list
-    apt-get -qq update
+    # install amd / intel-i965 driver packages
     apt-get -qq install --no-install-recommends --no-install-suggests -y \
         i965-va-driver intel-gpu-tools onevpl-tools \
         libva-drm2 \
@@ -79,8 +77,6 @@ if [[ "${TARGETARCH}" == "amd64" ]]; then
 
     # intel packages use zst compression so we need to update dpkg
     apt-get install -y dpkg
-
-    rm -f /etc/apt/sources.list.d/debian-bookworm.list
 
     # use intel apt intel packages
     wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --yes --dearmor --output /usr/share/keyrings/intel-graphics.gpg
